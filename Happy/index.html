@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selamat Ulang Tahun!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            max-width: 600px;
+            width: 90%;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .login-screen h2 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        /* Birthday Screen */
+        .birthday-screen {
+            display: none;
+            color: white;
+            text-align: center;
+        }
+
+        .birthday-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: cardFloat 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes cardFloat {
+            from { transform: translateY(0px); }
+            to { transform: translateY(-10px); }
+        }
+
+        .birthday-title {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from { filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5)); }
+            to { filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8)); }
+        }
+
+        .birthday-names {
+            font-size: 2.5rem;
+            margin: 20px 0;
+            color: #ffd700;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .birthday-message {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            margin: 30px 0;
+            color: #f8f9fa;
+        }
+
+        .decorations {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .balloon {
+            position: absolute;
+            font-size: 3rem;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .balloon:nth-child(1) {
+            left: 10%;
+            top: 20%;
+            animation-delay: 0s;
+        }
+
+        .balloon:nth-child(2) {
+            right: 10%;
+            top: 30%;
+            animation-delay: 1s;
+        }
+
+        .balloon:nth-child(3) {
+            left: 20%;
+            bottom: 20%;
+            animation-delay: 2s;
+        }
+
+        .balloon:nth-child(4) {
+            right: 20%;
+            bottom: 30%;
+            animation-delay: 3s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ffd700;
+            animation: confettiFall 3s linear infinite;
+        }
+
+        @keyframes confettiFall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        /* Generate multiple confetti pieces */
+        .confetti:nth-child(odd) { background: #ff6b6b; }
+        .confetti:nth-child(3n) { background: #4ecdc4; }
+        .confetti:nth-child(4n) { background: #45b7d1; }
+        .confetti:nth-child(5n) { background: #f9ca24; }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .birthday-title { font-size: 2rem; }
+            .birthday-names { font-size: 1.8rem; }
+            .birthday-message { font-size: 1.1rem; }
+            .login-screen { padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Screen -->
+        <div id="loginScreen" class="login-screen">
+            <h2>🎉 Verifikasi Identitas 🎉</h2>
+            <p style="margin-bottom: 20px; color: #666;">Masukin nama lu sesuai jink jangan asal </p>
+            <div class="input-group">
+                <input type="text" id="nameInput" placeholder="Jangan Ngasal ya asuu nanti ga ke diteck bgsd 🥵" autocomplete="off">
+            </div>
+            <button class="btn" onclick="verifyName()">Masuk ke Pesta! 🎈</button>
+            <div id="errorMessage" class="error-message"></div>
+        </div>
+
+        <!-- Birthday Screen -->
+        <div id="birthdayScreen" class="birthday-screen">
+            <div class="birthday-card">
+                <h1 class="birthday-title">SELAMAT ULANG TAHUN! </h1>
+                <div class="birthday-names">GHIFARI & MIFTAH</div>
+                <div class="birthday-message">
+                    🌟 HBD BOTH OF YOU moga panjang umur dan sehat yeehh! 🌟<br><br>
+                    🎁 Semoga kelen sukses dan mendapatkan IPK 5.00 🤤  🎁<br><br>
+                    🥳 Khusus Ghifari Moga Sifat haluwnya berkurang yaa  ! 🥳<br><br>
+                    💝 Ditunggu Traktiran Mie gacoanya Jangan Lupaaaaa  💝
+                </div>
+                <div style="font-size: 1.5rem; margin-top: 30px;">
+                    🎉🎊 HAPPY BIRTHDAY! 🎊🎉
+                </div>
+            </div>
+            
+            <!-- Decorations -->
+            <div class="decorations">
+                <div class="balloon">🎈</div>
+                <div class="balloon">🎈</div>
+                <div class="balloon">🎈</div>
+                <div class="balloon">🎈</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Element (Ganti src dengan file MP3 Anda) -->
+    <audio id="birthdayMusic" loop>
+        <source src="music/Jamrud - Selamat Ulang Tahun (lyrics) [mAJa4SF_VVI].mp3" type="audio/mpeg">
+        <!-- Ganti "birthday-song.mp3" dengan path file musik Anda -->
+    </audio>
+
+    <script>
+        // Daftar nama yang diizinkan (case insensitive)
+        const allowedNames = [
+            'ghifari', 
+            'miftah',
+            'ghifari dan miftah',
+            'miftah dan ghifari',
+            'admin',
+            'tamu'  // Tambahkan nama lain jika diperlukan
+        ];
+
+        function verifyName() {
+            const nameInput = document.getElementById('nameInput');
+            const errorMessage = document.getElementById('errorMessage');
+            const inputName = nameInput.value.trim().toLowerCase();
+            
+            // Reset error message
+            errorMessage.textContent = '';
+            
+            if (inputName === '') {
+                errorMessage.textContent = 'Mohon masukkan nama Anda!';
+                return;
+            }
+            
+            // Check if name is allowed
+            const isAllowed = allowedNames.some(name => 
+                inputName.includes(name) || name.includes(inputName)
+            );
+            
+            if (isAllowed) {
+                // Hide login screen and show birthday screen
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('birthdayScreen').style.display = 'block';
+                
+                // Start playing music
+                playBirthdayMusic();
+                
+                // Add confetti effect
+                createConfetti();
+                
+                // Change background animation
+                document.body.style.animation = 'backgroundShift 10s ease-in-out infinite alternate';
+                addBackgroundAnimation();
+            } else {
+                errorMessage.textContent = 'Maaf, nama Anda tidak terdaftar untuk acara ini! 😅';
+                nameInput.value = '';
+            }
+        }
+        
+        function playBirthdayMusic() {
+            const audio = document.getElementById('birthdayMusic');
+            // Attempt to play music (might be blocked by browser policy)
+            audio.play().catch(function(error) {
+                console.log('Autoplay was prevented:', error);
+                // You could show a button for user to manually start music
+            });
+        }
+        
+        function createConfetti() {
+            const decorations = document.querySelector('.decorations');
+            
+            // Create confetti pieces
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.animationDelay = Math.random() * 3 + 's';
+                    confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    decorations.appendChild(confetti);
+                    
+                    // Remove confetti after animation
+                    setTimeout(() => {
+                        if (confetti.parentNode) {
+                            confetti.parentNode.removeChild(confetti);
+                        }
+                    }, 5000);
+                }, i * 100);
+            }
+        }
+        
+        function addBackgroundAnimation() {
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes backgroundShift {
+                    0% { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+                    25% { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+                    50% { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+                    75% { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+                    100% { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        // Allow Enter key to submit
+        document.getElementById('nameInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verifyName();
+            }
+        });
+        
+        // Focus on input when page loads
+        window.onload = function() {
+            document.getElementById('nameInput').focus();
+        };
+
+        function verifyName() {
+    const nameInput = document.getElementById('nameInput');
+    const errorMessage = document.getElementById('errorMessage');
+    const inputName = nameInput.value.trim().toLowerCase();
+
+    // Reset error message
+    errorMessage.textContent = '';
+
+    if (inputName === '') {
+        errorMessage.textContent = 'Mohon masukkan nama Anda!';
+        return;
+    }
+
+    // Nama utama (akses penuh)
+    const allowedNames = [
+        'ghifari', 
+        'miftah',
+        'ghifari dan miftah',
+        'miftah dan ghifari',
+        'admin',
+        'tamu'
+    ];
+
+    // Nama teman yang diizinkan tapi tampilkan pesan berbeda
+    const guestNames = [
+        'jembar', 
+        'dion', 
+        'dionisius', 
+        'luthfi', 
+        'ilzam', 
+        'haris', 
+        'william', 
+        'juan'
+    ];
+
+    const isAllowed = allowedNames.some(name => inputName.includes(name));
+    const isGuest = guestNames.some(name => inputName.includes(name));
+
+    if (isAllowed || isGuest) {
+        // Hide login, show birthday
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('birthdayScreen').style.display = 'block';
+        playBirthdayMusic();
+        createConfetti();
+        document.body.style.animation = 'backgroundShift 10s ease-in-out infinite alternate';
+        addBackgroundAnimation();
+
+        // Jika hanya guest, tampilkan pesan khusus
+        if (!isAllowed && isGuest) {
+            alert('🎉 Si ghifari ama miftah ulang tahun tuh! 🎉');
+        }
+
+    } else {
+        errorMessage.textContent = 'si Anj ga usah batu napa ! 😅';
+        nameInput.value = '';
+    }
+}
+
+    function playBirthdayMusic() {
+      const music = document.getElementById('birthdayMusic');
+      music.currentTime = 0;
+      music.play();
+
+      // Stop after 60 seconds
+      clearTimeout(musicTimeout); // clear previous timeout if any
+      musicTimeout = setTimeout(() => {
+        music.pause();
+        music.currentTime = 0;
+      }, 60000); // 60 detik
+
+    }
+
+    </script>
+</body>
+</html>
